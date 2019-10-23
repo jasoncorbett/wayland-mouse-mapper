@@ -4,16 +4,18 @@ event_type=EV_KEY
 action_type=POINTER_BUTTON
 pressed="pressed,"
 
-readarray -t devices <<<$(libinput list-devices | grep pointer -B3 | grep -o '/dev/input/event[1-9]*')
-
+readarray -t devices <<<$(libinput list-devices | grep 'Logitech Performance MX' -A1 | grep -o '/dev/input/event[1-9]*')
+kbd_device=$(libinput list-devices | grep 'Logitech USB Keyboard$' -A1  |grep -o '/dev/input/event[1-9]*')
 # COMMANDS MAP
-BTN_EXTRA=(KEY_LEFTMETA KEY_PAGEUP)
-BTN_SIDE=(KEY_LEFTMETA KEY_PAGEDOWN)
+#BTN_EXTRA=(KEY_LEFTMETA KEY_PAGEUP)
+#BTN_SIDE=(KEY_LEFTMETA KEY_PAGEDOWN)
+BTN_FORWARD=(KEY_LEFTCTRL KEY_F10)
+
 
 function pressKey(){
     device=$1; key=$2; value=$3
     echo "pressing ${key} ${value}"
-    evemu-event /dev/input/${device} --sync --type ${event_type} --code ${key} --value ${value};
+    evemu-event $kbd_device --sync --type ${event_type} --code ${key} --value ${value};
 }
 
 function pressCommand(){
